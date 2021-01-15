@@ -1,0 +1,28 @@
+version: "3.2"
+services:
+  database:
+    container_name: postgres
+    image: postgres:9.6.14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: ufp
+      POSTGRES_PASSWORD: 12345
+      PGDATA: /var/lib/postgres
+    ports:
+      - "5433:5432"
+    networks: [ mynetwork ]
+    volumes:
+      - ./psql_data:/var/lib/postgres
+  app:
+    container_name: app
+    build:
+      context: .
+    image: ufp_app
+    ports:
+      - "8090:8090"
+    depends_on:
+      - database
+    networks: [ mynetwork ]
+    restart: always
+networks: {mynetwork:{}}
